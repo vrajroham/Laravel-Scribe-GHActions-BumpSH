@@ -61,4 +61,14 @@ class PostController extends Controller
         return "post destroy";
     }
 
+    /**
+     * Test post
+     *
+     * @return string
+     */
+    public function test()
+    {
+        return "post test";
+    }
+
 }
