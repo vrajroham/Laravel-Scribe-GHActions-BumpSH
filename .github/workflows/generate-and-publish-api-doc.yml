@@ -93,12 +93,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Listing files from current directory
-        run: ls -la
+      - name: Listing files from public directory
+        run: ls -la public/docs
 
       - name: Deploy API documentation
         uses: bump-sh/github-action@v1
         with:
           doc: "93471600-4ff2-4d4d-aef6-b343b533b152"
           token: ${{secrets.BUMP_TOKEN}}
-          file: public/docs/openapi.yaml
+          file: /public/docs/openapi.yaml
