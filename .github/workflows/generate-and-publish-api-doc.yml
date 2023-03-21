@@ -93,6 +93,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Listing files from current directory
+        run: ls -la
+
       - name: Deploy API documentation
         uses: bump-sh/github-action@v1
         with:
