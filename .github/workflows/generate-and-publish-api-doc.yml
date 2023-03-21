@@ -57,7 +57,7 @@ jobs:
             ${{ runner.os }}-composer-
 
       - name: 🔏 Copy .env file
-        run: php -r "file_exists('.env') || copy('.env.testing.example', '.env');"
+        run: php -r "file_exists('.env') || copy('.env.example', '.env');"
 
       - name: ⏳ Install composer dependencies
         run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist --ignore-platform-reqs
