@@ -1,0 +1,101 @@
+name: "Generate and publish API documentation"
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  TEST_APP:
+    name: Test the application on PHP 8.0
+    runs-on: ubuntu-latest
+    services:
+      # mysql-service Label used to access the service container
+      mysql-service:
+        # Docker Hub image (also with version)
+        image: mysql:5.7
+        env:
+          ## Accessing to GitHub secrets, where you can store your configuration
+          MYSQL_ROOT_PASSWORD: test
+          MYSQL_DATABASE: db_test
+        ports:
+          ## map the "external" 33306 port with the "internal" 3306
+          - 33306:3306
+        # Set health checks to wait until mysql database has started (it takes some seconds to start)
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+    steps:
+      - name: 🐘 Setting PHP 8.0 environtment
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.0'
+
+      - name: 🧭 Start MongoDB
+        uses: supercharge/mongodb-github-action@1.3.0
+        with:
+          mongodb-version: 4.2
+          mongodb-replica-set: rs0
+
+      - name: ⏳ Fetching latest commit
+        uses: actions/checkout@v2
+
+      - name: 🪄 Validating composer.json and composer.lock
+        run: composer validate --strict
+
+      - name: 🥞 Get Composer Cache Directory
+        id: composer-cache
+        run: |
+          echo "::set-output name=dir::$(composer config cache-files-dir)"
+      - uses: actions/cache@v2
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+
+      - name: 🔏 Copy .env file
+        run: php -r "file_exists('.env') || copy('.env.testing.example', '.env');"
+
+      - name: ⏳ Install composer dependencies
+        run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist --ignore-platform-reqs
+
+      - name: 💫 Dump and autoload composer
+        run: composer dump-autoload
+
+      - name: 🔑 Generate the application key
+        run: php artisan key:generate
+
+      - name: 🗑️ Clear bootstrap cache
+        run: chmod -R 777 storage bootstrap/cache
+
+      # Set environment variables and run the test suite
+      - name: 🧪 Running test suite via PHPUnit
+        env:
+          DB_CONNECTION: mysql
+          DB_DATABASE: db_test
+          DB_PORT: 33306
+          DB_USERNAME: root
+          DB_PASSWORD: test
+        run: vendor/bin/phpunit
+
+      - name: 📔Generating documentation
+        run: php artisan scribe:generate --force
+
+  deploy-doc:
+    name: Deploy API doc on Bump
+    runs-on: ubuntu-latest
+    if: ${{ always() && contains(join(needs.*.result, ','), 'success') }}
+    needs: [TEST_APP]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Deploy API documentation
+        uses: bump-sh/github-action@v1
+        with:
+          doc: "93471600-4ff2-4d4d-aef6-b343b533b152"
+          token: ${{secrets.BUMP_TOKEN}}
+          file: public/docs/openapi.yaml
