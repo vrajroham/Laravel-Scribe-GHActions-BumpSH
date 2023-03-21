@@ -84,15 +84,6 @@ jobs:
       - name: 📔Generating documentation
         run: php artisan scribe:generate --force
 
-  deploy-doc:
-    name: Deploy API doc on Bump
-    runs-on: ubuntu-latest
-    if: ${{ always() && contains(join(needs.*.result, ','), 'success') }}
-    needs: [TEST_APP]
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
       - name: Listing files from public directory
         run: ls -la public/docs
 
@@ -102,3 +93,4 @@ jobs:
           doc: "93471600-4ff2-4d4d-aef6-b343b533b152"
           token: ${{secrets.BUMP_TOKEN}}
           file: /public/docs/openapi.yaml
+
