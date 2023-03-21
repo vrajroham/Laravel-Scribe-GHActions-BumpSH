@@ -25,4 +25,5 @@ Route::group(['prefix' => 'post'], function () {
     Route::put('/{id}', 'App\Http\Controllers\PostController@update');
     Route::delete('/{id}', 'App\Http\Controllers\PostController@destroy');
     Route::get('/test', 'App\Http\Controllers\PostController@test');
+    Route::post('/test-endpoint', 'App\Http\Controllers\PostController@test');
 });
