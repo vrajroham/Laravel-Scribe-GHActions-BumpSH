@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Exit immediately if a command exits with a non-zero status
+set -e
+
 # Set your repository name and owner
 repo_owner="vrajroham"
 repo_name="Laravel-Scribe-GHActions-BumpSH"
@@ -25,6 +28,9 @@ git push origin master
 
 # Checkout the production branch
 git checkout production
+
+# Pull the latest changes from the production branch
+git pull origin production
 
 # Set the body of the pull request
 pull_request_body=$(git log --oneline --no-merges HEAD...origin/master | awk '{print "* "$0}')
