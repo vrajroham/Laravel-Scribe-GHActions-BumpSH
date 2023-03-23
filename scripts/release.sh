@@ -73,7 +73,7 @@ echo "------------------------------------------------------------"
 pull_request_body=$(git log --oneline --no-merges HEAD...origin/master | awk '{print "* "$0}')
 
 # Prompt the user to enter the pull request title
-pull_request_title="Release $new_version_number"
+pull_request_title="Release $new_version"
 
 # Get the pull request number
 pull_request_number=$(gh pr list --base production --head master --repo "$repo_owner/$repo_name" | awk '{print $1}')
