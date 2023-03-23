@@ -95,7 +95,7 @@ echo "------------------------------------------------------------"
 
 # Set the body of the pull request
 # Append h3 tag to the beginning of body
-pull_request_body="## Changes \r"$(git log --oneline --no-merges HEAD...origin/master | awk '{print "* "$0}')
+pull_request_body="## Changes \n \n"$(git log --oneline --no-merges HEAD...origin/master | awk '{print "* "$0}')
 
 # Prompt the user to enter the pull request title
 pull_request_title="Release $new_version"
