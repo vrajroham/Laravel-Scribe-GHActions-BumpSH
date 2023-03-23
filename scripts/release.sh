@@ -14,7 +14,7 @@ git checkout master
 
 # ensure git working directory is clean
 if [ -z "$(git status --porcelain)" ]; then
-  echo ""
+  echo "Working directory is clean, continuing..."
 else
   echo -e "\033[31;47m Working directory not clean. Commit or stash changes first \033[0m"
 
