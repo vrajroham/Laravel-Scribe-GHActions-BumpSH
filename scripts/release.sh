@@ -25,7 +25,7 @@ version=$(grep -Eo "'version' => '[0-9]+\.[0-9]+\.[0-9]+'" config/prime.php | gr
 
 if [[ "$release_type" == "major" ]]; then
   # Increment the major version number
-  new_version=$(echo "$version" | awk -F. '{print $1 "." $2+1 "." $3}')
+  new_version=$(echo "$version" | awk -F. '{print $1 "." $2+1 ".0"}')
 elif [[ "$release_type" == "minor" ]]; then
   # Increment the minor version number
   new_version=$(echo "$version" | awk -F. '{print $1 "." $2 "." $3+1}')
