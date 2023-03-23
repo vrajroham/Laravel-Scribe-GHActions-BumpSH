@@ -13,9 +13,8 @@ git checkout master
 # Pull the latest changes from the master branch
 git pull origin master
 
-#!/bin/bash
-
-set -e
+# Add a blank line
+echo "------------------------------------------------------------"
 
 # Ask the user if it's a major or minor release
 read -p "Is this a major or minor release? (major/minor): " release_type
@@ -40,21 +39,23 @@ awk -v new_version="$new_version" -F\' '/version/ {OFS=FS; $4=new_version} 1' co
 
 echo "Updated version to $new_version"
 
+# Add a blank line
+echo "------------------------------------------------------------"
+
 # Run the tests
 echo "Running tests..."
 ./vendor/bin/phpunit
+
+# Add a blank line
+echo "------------------------------------------------------------"
 
 # Commit and push the changes
 echo "Committing changes..."
 git add config/prime.php
 git commit -m "Release $new_version"
 
-# Create a pull request
-#echo "Creating pull request..."
-#gh pr create --title "Release $new_version" --body "Changes since $version:"$(git log --oneline --no-merges "v$version.." --pretty=' - %s (%h)') --base production --head master
-
-#echo "Pull request created!"
-
+# Add a blank line
+echo "------------------------------------------------------------"
 
 # Push the changes to the master branch
 git push origin master
@@ -65,11 +66,33 @@ git checkout production
 # Pull the latest changes from the production branch
 git pull origin production
 
+# Add a blank line
+echo "------------------------------------------------------------"
+
 # Set the body of the pull request
 pull_request_body=$(git log --oneline --no-merges HEAD...origin/master | awk '{print "* "$0}')
 
 # Prompt the user to enter the pull request title
 pull_request_title="Release $new_version_number"
 
-# Create a pull request using the `gh` command
-gh pr create --title "$pull_request_title" --body "$pull_request_body" --base production --head master --repo "$repo_owner/$repo_name"
+# Check if pull request already exists
+if gh pr list --base production --head master --repo "$repo_owner/$repo_name" | grep -q "pulls"; then
+  # Get the pull request number
+  pull_request_number=$(gh pr list --base production --head master --repo "$repo_owner/$repo_name" | awk '{print $1}')
+
+  # Update the body and title of the existing pull request
+  echo "Updating the body of the existing pull request..."
+  gh pr edit "$pull_request_number" --title "$pull_request_title" --body "$pull_request_body" --repo "$repo_owner/$repo_name"
+
+else
+
+    # Create a pull request using the `gh` command
+    echo "Creating a pull request..."
+    gh pr create --title "$pull_request_title" --body "$pull_request_body" --base production --head master --repo "$repo_owner/$repo_name"
+
+fi
+
+# Add a blank line
+echo "------------------------------------------------------------"
+
+
