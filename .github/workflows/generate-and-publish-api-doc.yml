@@ -71,23 +71,10 @@ jobs:
       - name: 🗑️ Clear bootstrap cache
         run: chmod -R 777 storage bootstrap/cache
 
-      # Set environment variables and run the test suite
-      - name: 🧪 Running test suite via PHPUnit
-        env:
-          DB_CONNECTION: mysql
-          DB_DATABASE: db_test
-          DB_PORT: 33306
-          DB_USERNAME: root
-          DB_PASSWORD: test
-        run: vendor/bin/phpunit
-
-      - name: 📔Generating documentation
+      - name: 📔 Generating documentation
         run: php artisan scribe:generate --force
 
-      - name: Listing files from public directory
-        run: ls -la public/docs
-
-      - name: Deploy API documentation
+      - name: 🗳️ Deploying API documentation
         uses: bump-sh/github-action@v1
         with:
           doc: "93471600-4ff2-4d4d-aef6-b343b533b152"
