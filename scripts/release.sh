@@ -21,7 +21,7 @@ set -e
 read -p "Is this a major or minor release? (major/minor): " release_type
 
 # Set the current version number
-version=$(grep -oP "(?<=version' => ')(\d+\.\d+\.\d+)" config/prime.php)
+version=$(grep -Eo "'version' => '[0-9]+\.[0-9]+\.[0-9]+'" config/prime.php | grep -Eo "[0-9]+\.[0-9]+\.[0-9]+")
 
 if [[ "$release_type" == "major" ]]; then
   # Increment the major version number
