@@ -13,15 +13,48 @@ git checkout master
 # Pull the latest changes from the master branch
 git pull origin master
 
-# Prompt the user to enter the new version number
-read -p "Enter the new version number: " new_version_number
+#!/bin/bash
 
-# Update the version number in prime.php
-sed -i "s/'version' => '[0-9]\+\.[0-9]\+'/\'version\' => '$new_version_number'/g" config/prime.php
+set -e
 
-# Create a commit with the updated version number
-git add prime.php
-git commit -m "Release $new_version_number"
+# Ask the user if it's a major or minor release
+read -p "Is this a major or minor release? (major/minor): " release_type
+
+# Set the current version number
+version=$(grep -oP "(?<=version' => ')(\d+\.\d+\.\d+)" config/prime.php)
+
+if [[ "$release_type" == "major" ]]; then
+  # Increment the major version number
+  new_version=$(echo "$version" | awk -F. '{print $1 "." $2+1 "." $3}')
+elif [[ "$release_type" == "minor" ]]; then
+  # Increment the minor version number
+  new_version=$(echo "$version" | awk -F. '{print $1 "." $2 "." $3+1}')
+else
+  # Invalid release type
+  echo "Invalid release type: $release_type"
+  exit 1
+fi
+
+# Update the version number in the config file
+awk -v new_version="$new_version" -F\' '/version/ {OFS=FS; $4=new_version} 1' config/prime.php > temp && mv temp config/prime.php
+
+echo "Updated version to $new_version"
+
+# Run the tests
+echo "Running tests..."
+./vendor/bin/phpunit
+
+# Commit and push the changes
+echo "Committing changes..."
+git add config/prime.php
+git commit -m "Release $new_version"
+
+# Create a pull request
+#echo "Creating pull request..."
+#gh pr create --title "Release $new_version" --body "Changes since $version:"$(git log --oneline --no-merges "v$version.." --pretty=' - %s (%h)') --base production --head master
+
+#echo "Pull request created!"
+
 
 # Push the changes to the master branch
 git push origin master
