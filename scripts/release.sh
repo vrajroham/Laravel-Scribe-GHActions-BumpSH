@@ -126,6 +126,12 @@ git checkout master
 echo "------------------------------------------------------------"
 
 echo ""
-echo -e "\033[42m\033[1;37m Done! Checkout the PR on github.com \033[0m"
+echo -e "\033[42m\033[1;37m Done! \033[0m"
+
+# Open PR in browser
+updated_pull_request_number=$(gh pr list --base production --head master --repo "$repo_owner/$repo_name" | awk '{print $1}')
+gh pr view "$updated_pull_request_number" --repo "$repo_owner/$repo_name" --web
+
+
 
 
