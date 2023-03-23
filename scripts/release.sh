@@ -75,10 +75,11 @@ pull_request_body=$(git log --oneline --no-merges HEAD...origin/master | awk '{p
 # Prompt the user to enter the pull request title
 pull_request_title="Release $new_version_number"
 
+# Get the pull request number
+pull_request_number=$(gh pr list --base production --head master --repo "$repo_owner/$repo_name" | awk '{print $1}')
+
 # Check if pull request already exists
-if gh pr list --base production --head master --repo "$repo_owner/$repo_name" | grep -q "pulls"; then
-  # Get the pull request number
-  pull_request_number=$(gh pr list --base production --head master --repo "$repo_owner/$repo_name" | awk '{print $1}')
+if [ -n "$pull_request_number" ]; then
 
   # Update the body and title of the existing pull request
   echo "Updating the body of the existing pull request..."
@@ -91,6 +92,9 @@ else
     gh pr create --title "$pull_request_title" --body "$pull_request_body" --base production --head master --repo "$repo_owner/$repo_name"
 
 fi
+
+# Checkout the master branch
+git checkout master
 
 # Add a blank line
 echo "------------------------------------------------------------"
