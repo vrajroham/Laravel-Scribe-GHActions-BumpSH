@@ -1,6 +1,6 @@
 name: New Aggregator Platform
 description: Request to add new aggregator platform
-title: "[Service Request] Add new platform UPDATE_NEW_PLATFORM_NAME"
+title: "[Service Request] Add new platform UPDATE_NEW_PLATFORM_NAMEs"
 labels: ["service-request", "API"]
 assignees:
   - vrajroham
@@ -8,55 +8,35 @@ body:
   - type: markdown
     attributes:
       value: |
-        Thanks for taking the time to fill out this bug report!
+        Add following details for the aggregator you want to add on Prime.
   - type: input
-    id: contact
+    id: name
     attributes:
-      label: Contact Details
-      description: How can we get in touch with you if we need more info?
-      placeholder: ex. email@example.com
+      label: Platform Name
+      description: What is the platform name?
+      placeholder: ex. Uber Eats
     validations:
-      required: false
+      required: true
+  - type: input
+    id: platformname
+    attributes:
+      label: Platform Key
+      description: What is the **platform-key** that Codex will send in downstream playload?
+      placeholder: ex. ubereats
+    validations:
+      required: true
   - type: textarea
-    id: what-happened
     attributes:
-      label: What happened?
-      description: Also tell us, what did you expect to happen?
-      placeholder: Tell us what you see!
-      value: "A bug happened!"
+    label: Platform Logo
+    description: |
+      Attach the platform logo. It would be better if you provided logo in 512x512px format(optional)
+
+      Tip: You can attach logo or additional files by clicking this area to highlight it and then dragging files in.
     validations:
       required: true
-  - type: dropdown
-    id: version
-    attributes:
-      label: Version
-      description: What version of our software are you running?
-      options:
-        - 1.0.2 (Default)
-        - 1.0.3 (Edge)
-    validations:
-      required: true
-  - type: dropdown
-    id: browsers
-    attributes:
-      label: What browsers are you seeing the problem on?
-      multiple: true
-      options:
-        - Firefox
-        - Chrome
-        - Safari
-        - Microsoft Edge
   - type: textarea
     id: logs
     attributes:
-      label: Relevant log output
-      description: Please copy and paste any relevant log output. This will be automatically formatted into code, so no need for backticks.
-      render: shell
-  - type: checkboxes
-    id: terms
-    attributes:
-      label: Code of Conduct
-      description: By submitting this issue, you agree to follow our [Code of Conduct](https://example.com)
-      options:
-        - label: I agree to follow this project's Code of Conduct
-          required: true
+      label: Anything else?
+      description: Would you like to share anything else along with the request. E.g. Similar request made in past?
+
