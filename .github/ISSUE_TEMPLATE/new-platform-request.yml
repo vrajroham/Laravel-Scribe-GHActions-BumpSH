@@ -27,13 +27,13 @@ body:
       required: true
   - type: textarea
     attributes:
-    label: Platform Logo
-    description: |
-      Attach the platform logo. It would be better if you provided logo in 512x512px format(optional)
+      label: Platform Logo
+      description: |
+        Attach the platform logo. It would be better if you provided logo in 512x512px format(optional)
 
-      Tip: You can attach logo or additional files by clicking this area to highlight it and then dragging files in.
-    validations:
-      required: true
+        Tip: You can attach logo or additional files by clicking this area to highlight it and then dragging files in.
+      validations:
+        required: true
   - type: textarea
     id: logs
     attributes:
